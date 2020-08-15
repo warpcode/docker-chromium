@@ -15,8 +15,14 @@ jobs:
         uses: crazy-max/ghaction-docker-buildx@v1
         with:
           version: latest
-      - name: build the image
+      - name: Docker login
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - name: Build the image
         run: |
           docker buildx build \
-            --pull -t warpcode/chromium:latest \
+            --pull --push -t warpcode/chromium:latest \
             --platform linux/amd64,linux/arm,linux/arm64 .
